@@ -126,9 +126,6 @@ class MainWindow(QMainWindow):
     def GetResourcePath(self, RelativeLocation):
         return os.path.join(self.AbsoluteDirectoryPath, RelativeLocation)
 
-    def Center(self):
-        pass
-
     def LoadConfigs(self):
         # Last Opened Directory
         LastOpenedDirectoryFile = self.GetResourcePath("Configs/LastOpenedDirectory.cfg")
