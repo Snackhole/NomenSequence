@@ -2,9 +2,11 @@ import os
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QFrame, QGridLayout, QLabel, QLineEdit, QListWidget, QMainWindow, QMessageBox, QProgressBar, QPushButton, QSpinBox
+from PyQt5.QtWidgets import QApplication, QFrame, QGridLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QSpinBox
 
+from Core.Renamer import Renamer
 from Interface.Widgets.IconButtons import AddButton, DeleteButton, MoveDownButton, MoveUpButton
+from Interface.Widgets.QueueTreeWidget import QueueTreeWidget
 
 
 class MainWindow(QMainWindow):
@@ -19,6 +21,9 @@ class MainWindow(QMainWindow):
         # Initialize
         super().__init__()
 
+        # Create Renamer
+        self.Renamer = Renamer()
+
         # Create Interface
         self.CreateInterface()
 
@@ -30,6 +35,9 @@ class MainWindow(QMainWindow):
 
         # Load Configs
         self.LoadConfigs()
+
+        # Update Queue
+        self.UpdateQueue()
 
     def CreateInterface(self):
         # Create Window Icon
@@ -45,7 +53,7 @@ class MainWindow(QMainWindow):
         # Create Widgets
         self.QueueLabel = QLabel("Rename Queue")
         self.QueueLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.QueueListWidget = QListWidget()
+        self.QueueTreeWidget = QueueTreeWidget(self)
         self.AddToQueueButton = AddButton(Slot=self.AddToQueue, Tooltip="Add Files to Rename Queue")
         self.RemoveFromQueueButton = DeleteButton(Slot=self.DeleteFromQueue, Tooltip="Delete File from Rename Queue")
         self.MoveFileUpInQueueButton = MoveUpButton(Slot=self.MoveFileUp, Tooltip="Move File Up in Queue")
@@ -97,7 +105,7 @@ class MainWindow(QMainWindow):
         self.Layout.addWidget(self.MoveFileUpInQueueButton, 1, 2)
         self.Layout.addWidget(self.MoveFileDownInQueueButton, 1, 3)
         self.Layout.addWidget(self.ClearQueueButton, 1, 4)
-        self.Layout.addWidget(self.QueueListWidget, 2, 0, 1, 5)
+        self.Layout.addWidget(self.QueueTreeWidget, 2, 0, 1, 5)
         self.Layout.addWidget(self.InputSeparator, 3, 0, 1, 5)
         self.InputsLayout = QGridLayout()
         self.InputsLayout.addWidget(self.PrefixLineEdit, 0, 0)
@@ -171,6 +179,9 @@ class MainWindow(QMainWindow):
         MessageBox.setText(Message)
         MessageBox.setStandardButtons(Buttons)
         return MessageBox.exec_()
+
+    def UpdateQueue(self):
+        self.QueueTreeWidget.FillFromQueue()
 
     # Window Management Methods
     def Center(self):
