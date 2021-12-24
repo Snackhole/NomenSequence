@@ -1,0 +1,12 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Environment
+venv/
+
+# VS Code
+.vscode/
+
+# NomenSequence Build and Runtime Files
+Configs/
+BUILD - */
