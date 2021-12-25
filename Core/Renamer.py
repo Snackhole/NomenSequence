@@ -1,4 +1,6 @@
 import os
+import queue
+import threading
 
 
 class Renamer:
@@ -67,4 +69,29 @@ class Renamer:
         self.GeneratedQueue.clear()
 
     def RenameFilesInQueue(self):
-        pass
+        class RenameThread(threading.Thread):
+            def __init__(self, FileQueue):
+                # Store Parameters
+                self.FileQueue = FileQueue
+
+                # Variables
+                self.RenameComplete = False
+                self.FilesRenamed = 0
+                self.FileQueueSize = self.FileQueue.qsize()
+
+                # Initialize
+                super().__init__(name="RenameThread", daemon=True)
+
+            def run(self):
+                while not self.FileQueue.empty():
+                    QueuedFile = self.FileQueue.get()
+                    os.rename(QueuedFile["Original Name"], QueuedFile["Rename To"])
+                    self.FilesRenamed += 1
+                self.RenameComplete = True
+
+        FileQueue = queue.Queue()
+        for QueuedFile in self.GeneratedQueue:
+            FileQueue.put(QueuedFile)
+
+        RenameThreadInst = RenameThread(FileQueue)
+        RenameThreadInst.start()

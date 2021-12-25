@@ -1,10 +1,13 @@
+import math
 import os
+import threading
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QFileDialog, QFrame, QGridLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QSpinBox
 
 from Core.Renamer import Renamer
+from Interface.StatusThread import StatusThread
 from Interface.Widgets.IconButtons import AddButton, DeleteButton, MoveDownButton, MoveUpButton
 from Interface.Widgets.QueueTreeWidget import QueueTreeWidget
 
@@ -206,8 +209,21 @@ class MainWindow(QMainWindow):
             self.UpdateQueue()
 
     def Rename(self):
-        pass
+        # Start Renaming Thread
+        self.SetRenameInProgress(True)
+        self.Renamer.RenameFilesInQueue()
 
+        # Attempt to Get Rename Thread and Set Up Status Checking
+        try:
+            RenameThreadInst = [RenameThread for RenameThread in threading.enumerate() if RenameThread.name == "RenameThread"][0]
+            StatusThreadInst = StatusThread(RenameThreadInst)
+            StatusThreadInst.UpdateProgressSignal.connect(lambda: self.UpdateProgress(RenameThreadInst))
+            StatusThreadInst.RenameCompleteSignal.connect(self.RenameComplete)
+            StatusThreadInst.start()
+        except IndexError:
+            self.RenameComplete()
+
+    # Interface Methods
     def DisplayMessageBox(self, Message, Icon=QMessageBox.Information, Buttons=QMessageBox.Ok, Parent=None):
         MessageBox = QMessageBox(self if Parent is None else Parent)
         MessageBox.setWindowIcon(self.WindowIcon)
@@ -225,6 +241,25 @@ class MainWindow(QMainWindow):
         self.Renamer.Extension = self.ExtensionLineEdit.text()
         self.Renamer.ExtraDigits = self.ExtraDigitsSpinBox.value()
         self.QueueTreeWidget.FillFromQueue()
+
+    def SetRenameInProgress(self, RenameInProgress):
+        self.RenameInProgress = RenameInProgress
+        for Widget in self.DisableList:
+            Widget.setDisabled(RenameInProgress)
+        if RenameInProgress:
+            self.StatusBar.showMessage("Renaming in progress...")
+        else:
+            self.StatusBar.clearMessage()
+            self.RenameProgressBar.reset()
+
+    def UpdateProgress(self, RenameThread):
+        RenameProgress = math.floor((RenameThread.FilesRenamed / RenameThread.FileQueueSize) * 100)
+        self.RenameProgressBar.setValue(RenameProgress)
+
+    def RenameComplete(self):
+        self.SetRenameInProgress(False)
+        self.Renamer.ClearQueue()
+        self.UpdateQueue()
 
     # Window Management Methods
     def Center(self):
