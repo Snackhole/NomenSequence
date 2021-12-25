@@ -6,7 +6,8 @@ class Renamer:
         # Variables
         self.FileQueue = []
         self.Prefix = ""
-        self.StartAt = 0
+        self.StartAt = 1
+        self.ExtraDigits = 0
         self.Suffix = ""
         self.Extension = ""
         self.GeneratedQueue = []
@@ -15,7 +16,7 @@ class Renamer:
         self.GeneratedQueue = []
         CurrentNumber = self.StartAt
         CountOfFiles = len(self.FileQueue)
-        DigitsInCount = len(str(CountOfFiles))
+        DigitsInCount = len(str(CountOfFiles + self.StartAt - 1)) + self.ExtraDigits
         for File in self.FileQueue:
             GeneratedNamePair = {}
             GeneratedNamePair["Original Name"] = File
