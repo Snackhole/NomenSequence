@@ -2,7 +2,7 @@ import os
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QFrame, QGridLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QSpinBox
+from PyQt5.QtWidgets import QApplication, QFileDialog, QFrame, QGridLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QSpinBox
 
 from Core.Renamer import Renamer
 from Interface.Widgets.IconButtons import AddButton, DeleteButton, MoveDownButton, MoveUpButton
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         self.QueueLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.QueueTreeWidget = QueueTreeWidget(self)
         self.AddToQueueButton = AddButton(Slot=self.AddToQueue, Tooltip="Add Files to Rename Queue")
-        self.RemoveFromQueueButton = DeleteButton(Slot=self.DeleteFromQueue, Tooltip="Delete File from Rename Queue")
+        self.RemoveFromQueueButton = DeleteButton(Slot=self.RemoveFromQueue, Tooltip="Remove File from Rename Queue")
         self.MoveFileUpInQueueButton = MoveUpButton(Slot=self.MoveFileUp, Tooltip="Move File Up in Queue")
         self.MoveFileDownInQueueButton = MoveDownButton(Slot=self.MoveFileDown, Tooltip="Move File Down in Queue")
         self.ClearQueueButton = QPushButton("Clear Queue")
@@ -154,19 +154,46 @@ class MainWindow(QMainWindow):
                     ConfigFile.write(self.LastOpenedDirectory)
 
     def AddToQueue(self):
-        pass
+        FilesToAdd = QFileDialog.getOpenFileNames(caption="Files to Add to Queue", directory=self.LastOpenedDirectory)[0]
+        if len(FilesToAdd) < 1:
+            return
+        AllFilesAddedSuccessfully = self.Renamer.AddFilesToQueue(FilesToAdd)
+        self.UpdateQueue()
+        self.LastOpenedDirectory = os.path.dirname(FilesToAdd[0])
+        if not AllFilesAddedSuccessfully:
+            self.DisplayMessageBox("Some of the selected files could not be added to the queue.  They may have already been in the queue.", Icon=QMessageBox.Warning)
 
-    def DeleteFromQueue(self):
-        pass
+    def RemoveFromQueue(self):
+        CurrentSelection = self.QueueTreeWidget.selectedItems()
+        if len(CurrentSelection) > 0:
+            CurrentFile = CurrentSelection[0]
+            CurrentFileIndex = CurrentFile.Index
+            if self.DisplayMessageBox("Remove this file from the queue?", Icon=QMessageBox.Question, Buttons=(QMessageBox.Yes | QMessageBox.No)) == QMessageBox.Yes:
+                self.Renamer.RemoveFileFromQueue(CurrentFileIndex)
+                self.UpdateQueue()
+                FileQueueLength = len(self.Renamer.FileQueue)
+                if FileQueueLength > 0:
+                    self.QueueTreeWidget.SelectIndex(CurrentFileIndex if CurrentFileIndex < FileQueueLength else FileQueueLength - 1)
 
     def MoveFileUp(self):
-        pass
+        self.MoveFile(-1)
 
     def MoveFileDown(self):
-        pass
+        self.MoveFile(1)
+
+    def MoveFile(self, Delta):
+        CurrentSelection = self.QueueTreeWidget.selectedItems()
+        if len(CurrentSelection) > 0:
+            CurrentFile = CurrentSelection[0]
+            CurrentFileIndex = CurrentFile.Index
+            if self.Renamer.MoveFileInQueue(CurrentFileIndex, Delta):
+                self.UpdateQueue()
+                self.QueueTreeWidget.SelectIndex(CurrentFileIndex + Delta)
 
     def ClearQueue(self):
-        pass
+        if self.DisplayMessageBox("Clear the file queue?", Icon=QMessageBox.Question, Buttons=(QMessageBox.Yes | QMessageBox.No)) == QMessageBox.Yes:
+            self.Renamer.ClearQueue()
+            self.UpdateQueue()
 
     def Rename(self):
         pass
