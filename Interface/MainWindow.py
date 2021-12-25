@@ -218,6 +218,7 @@ class MainWindow(QMainWindow):
         return MessageBox.exec_()
 
     def UpdateQueue(self):
+        self.AddToQueueButton.setEnabled(len(self.Renamer.FileQueue) == 0)
         self.Renamer.Prefix = self.PrefixLineEdit.text()
         self.Renamer.StartAt = self.NumberStartSpinBox.value()
         self.Renamer.Suffix = self.SuffixLineEdit.text()
