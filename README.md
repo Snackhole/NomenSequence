@@ -1,8 +1,8 @@
 # NomenSequence
-NomenSequence is a simple GUI app to rename any files with ascending integers, and arbitrary prefixes, suffixes, and extensions, written in Python 3.8 with PyQT5.
+NomenSequence is a simple GUI app to rename any files with ascending integers, and arbitrary prefixes, suffixes, and extensions, written in Python 3.10 with PyQT5.
 
 ## Installation
-Because NomenSequence is written in 64-bit Python and packaged as an executable zip, a 64-bit Python 3 installation is required to run it.  It was written and tested in Python 3.8, though it may or may not run in other versions of Python 3.
+Because NomenSequence is written in 64-bit Python and packaged as an executable zip, a 64-bit Python 3 installation is required to run it.  It was written and tested in Python 3.10, though it may or may not run in other versions of Python 3.
 
 ### Windows
 On Windows, an appropriate Python installation is included with the release, and does not need to be installed or downloaded separately.
@@ -12,9 +12,9 @@ Simply download the .zip file of the latest Windows release from this repository
 It is recommended you place the shortcut in `\AppData\Roaming\Microsoft\Windows\Start Menu\Programs` for convenience.  This will cause the shortcut to appear in the Start menu with the correct icon.  More shortcuts can always be made by double-clicking on `Create Shortcut.bat`.
 
 ### Linux
-On Linux, NomenSequence has only been built and tested for Kubuntu 20.04.  It probably runs just fine on many other distros, but you're on your own as far as resolving any problems or differences.
+On Linux, NomenSequence has only been built and tested for Kubuntu 22.04.  It probably runs just fine on many other distros, but you're on your own as far as resolving any problems or differences.
 
-It is generally assumed that you already have 64-bit Python 3 installed as part of your distro.  If your distro has 3.8, you should be fine; otherwise, you may or may not need to install 3.8.
+It is generally assumed that you already have 64-bit Python 3 installed as part of your distro.  If your distro has 3.10, you should be fine; otherwise, you may or may not need to install 3.10.
 
 First, download the .zip file of the latest Linux release from this repository, and unzip it wherever you like (probably easiest somewhere in your Home).  To run the app, open a terminal in the app's directory and use the following command:
 
@@ -34,4 +34,4 @@ The `Configs` folder should be left in place as it stores settings and contexts 
 ## Uninstallation
 Uninstalling NomenSequence itself only requires deleting the directory you extracted it to, along with any shortcuts you created.
 
-If you need to uninstall Python 3.8 or, on Linux, PyQT5, consult their documentation.
+If you need to uninstall Python 3.10 or, on Linux, PyQT5, consult their documentation.
