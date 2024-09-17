@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
             for Character in self.RestrictedCharacters:
                 RestrictedCharactersString += f"{Character} "
             RestrictedCharactersString.rstrip()
-            self.DisplayMessageBox(f"Renamed files cannot contain the following characters:\n\n{RestrictedCharactersString}")
+            self.DisplayMessageBox(f"Renamed files cannot contain the following characters:\n\n{RestrictedCharactersString}", Icon=QMessageBox.Warning)
             return
         
         # Start Renaming Thread
