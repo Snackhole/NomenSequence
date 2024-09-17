@@ -24,11 +24,11 @@ class Renamer:
             GeneratedNamePair["Original Name"] = File
             FileNumberString = str(CurrentNumber)
             if len(FileNumberString) < DigitsInCount:
-                FileNumberString = ("0" * (DigitsInCount - len(FileNumberString))) + FileNumberString
-            GeneratedNamePair["Rename To"] = os.path.join(os.path.dirname(File), self.Prefix + FileNumberString + self.Suffix + self.Extension)
+                FileNumberString = f"{"0" * (DigitsInCount - len(FileNumberString))}{FileNumberString}"
+            GeneratedNamePair["Rename To"] = os.path.join(os.path.dirname(File), f"{self.Prefix}{FileNumberString}{self.Suffix}{self.Extension}")
             CollisionSuffix = 1
             while os.path.isfile(GeneratedNamePair["Rename To"]):
-                GeneratedNamePair["Rename To"] = os.path.splitext(GeneratedNamePair["Rename To"])[0] + "-" + str(CollisionSuffix) + self.Extension
+                GeneratedNamePair["Rename To"] = f"{os.path.splitext(GeneratedNamePair["Rename To"])[0]}-{str(CollisionSuffix)}{self.Extension}"
                 CollisionSuffix += 1
             self.GeneratedQueue.append(GeneratedNamePair)
             CurrentNumber += 1

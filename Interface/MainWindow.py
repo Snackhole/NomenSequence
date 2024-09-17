@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
         self.AbsoluteDirectoryPath = AbsoluteDirectoryPath
 
         # Variables
+        self.RestrictedCharacters = ["/", "\\", "#", "%", "&", "{", "}", "<", ">", "*", "?", "$", "!", "'", "\"", ":", "@", "+", "`", "|", "="]
         self.RenameInProgress = False
 
         # Initialize
@@ -208,7 +209,22 @@ class MainWindow(QMainWindow):
             self.Renamer.ClearQueue()
             self.UpdateQueue()
 
+    def ValidRenamePaths(self):
+        for File in self.Renamer.GeneratedQueue:
+            for Character in self.RestrictedCharacters:
+                if Character in File["Rename To"]:
+                    return False
+        return True
+
     def Rename(self):
+        if not self.ValidRenamePaths():
+            RestrictedCharactersString = ""
+            for Character in self.RestrictedCharacters:
+                RestrictedCharactersString += f"{Character} "
+            RestrictedCharactersString.rstrip()
+            self.DisplayMessageBox(f"Renamed files cannot contain the following characters:\n\n{RestrictedCharactersString}")
+            return
+        
         # Start Renaming Thread
         self.SetRenameInProgress(True)
         self.Renamer.RenameFilesInQueue()
