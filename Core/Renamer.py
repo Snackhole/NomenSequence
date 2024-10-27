@@ -20,17 +20,19 @@ class Renamer:
         CountOfFiles = len(self.FileQueue)
         DigitsInCount = len(str(CountOfFiles + self.StartAt - 1)) + self.ExtraDigits
         for File in self.FileQueue:
-            GeneratedNamePair = {}
-            GeneratedNamePair["Original Name"] = File
+            GeneratedNameData = {}
+            GeneratedNameData["Original Name"] = File
             FileNumberString = str(CurrentNumber)
             if len(FileNumberString) < DigitsInCount:
                 FileNumberString = f"{"0" * (DigitsInCount - len(FileNumberString))}{FileNumberString}"
-            GeneratedNamePair["Rename To"] = os.path.join(os.path.dirname(File), f"{self.Prefix}{FileNumberString}{self.Suffix}{self.Extension}")
+            GeneratedName = f"{self.Prefix}{FileNumberString}{self.Suffix}{self.Extension}"
+            GeneratedNameData["Generated Name"] = GeneratedName
+            GeneratedNameData["Rename To"] = os.path.join(os.path.dirname(File), GeneratedName)
             CollisionSuffix = 1
-            while os.path.isfile(GeneratedNamePair["Rename To"]):
-                GeneratedNamePair["Rename To"] = f"{os.path.splitext(GeneratedNamePair["Rename To"])[0]}-{str(CollisionSuffix)}{self.Extension}"
+            while os.path.isfile(GeneratedNameData["Rename To"]):
+                GeneratedNameData["Rename To"] = f"{os.path.splitext(GeneratedNameData["Rename To"])[0]}-{str(CollisionSuffix)}{self.Extension}"
                 CollisionSuffix += 1
-            self.GeneratedQueue.append(GeneratedNamePair)
+            self.GeneratedQueue.append(GeneratedNameData)
             CurrentNumber += 1
         return self.GeneratedQueue
 
