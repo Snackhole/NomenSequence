@@ -2,9 +2,9 @@ import math
 import os
 import threading
 
-from PyQt5 import QtCore
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QFileDialog, QFrame, QGridLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QSpinBox
+from PyQt6 import QtCore
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QFileDialog, QFrame, QGridLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QSpinBox
 
 from Core.Renamer import Renamer
 from Interface.StatusThread import StatusThread
@@ -63,14 +63,14 @@ class MainWindow(QMainWindow):
         self.ClearQueueButton = QPushButton("Clear Queue")
         self.ClearQueueButton.clicked.connect(self.ClearQueue)
         self.InputSeparator = QFrame()
-        self.InputSeparator.setFrameShape(QFrame.HLine)
-        self.InputSeparator.setFrameShadow(QFrame.Sunken)
+        self.InputSeparator.setFrameShape(QFrame.Shape.HLine)
+        self.InputSeparator.setFrameShadow(QFrame.Shadow.Sunken)
         self.PrefixLineEdit = QLineEdit()
         self.PrefixLineEdit.setPlaceholderText("Prefix")
         self.PrefixLineEdit.textChanged.connect(self.UpdateQueue)
         self.NumberStartSpinBox = QSpinBox()
-        self.NumberStartSpinBox.setAlignment(QtCore.Qt.AlignCenter)
-        self.NumberStartSpinBox.setButtonSymbols(self.NumberStartSpinBox.NoButtons)
+        self.NumberStartSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.NumberStartSpinBox.setButtonSymbols(self.NumberStartSpinBox.ButtonSymbols.NoButtons)
         self.NumberStartSpinBox.setRange(0, 1000000000)
         self.NumberStartSpinBox.setPrefix("Start at:  ")
         self.NumberStartSpinBox.setValue(1)
@@ -82,8 +82,8 @@ class MainWindow(QMainWindow):
         self.ExtensionLineEdit.setPlaceholderText("Extension")
         self.ExtensionLineEdit.textChanged.connect(self.UpdateQueue)
         self.ExtraDigitsSpinBox = QSpinBox()
-        self.ExtraDigitsSpinBox.setAlignment(QtCore.Qt.AlignCenter)
-        self.ExtraDigitsSpinBox.setButtonSymbols(self.ExtraDigitsSpinBox.NoButtons)
+        self.ExtraDigitsSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.ExtraDigitsSpinBox.setButtonSymbols(self.ExtraDigitsSpinBox.ButtonSymbols.NoButtons)
         self.ExtraDigitsSpinBox.setRange(0, 1000000000)
         self.ExtraDigitsSpinBox.setPrefix("Extra digits:  ")
         self.ExtraDigitsSpinBox.setValue(0)
@@ -91,8 +91,8 @@ class MainWindow(QMainWindow):
         self.RenameButton = QPushButton("Rename Files")
         self.RenameButton.clicked.connect(self.Rename)
         self.ProgressSeparator = QFrame()
-        self.ProgressSeparator.setFrameShape(QFrame.HLine)
-        self.ProgressSeparator.setFrameShadow(QFrame.Sunken)
+        self.ProgressSeparator.setFrameShape(QFrame.Shape.HLine)
+        self.ProgressSeparator.setFrameShadow(QFrame.Shadow.Sunken)
         self.RenameProgressLabel = QLabel("Rename Progress")
         self.RenameProgressBar = QProgressBar()
 
@@ -175,14 +175,14 @@ class MainWindow(QMainWindow):
         self.UpdateQueue()
         self.LastOpenedDirectory = os.path.dirname(FilesToAdd[0])
         if not AllFilesAddedSuccessfully:
-            self.DisplayMessageBox("Some of the selected files could not be added to the queue.  They may have already been in the queue.", Icon=QMessageBox.Warning)
+            self.DisplayMessageBox("Some of the selected files could not be added to the queue.  They may have already been in the queue.", Icon=QMessageBox.Icon.Warning)
 
     def RemoveFromQueue(self):
         CurrentSelection = self.QueueTreeWidget.selectedItems()
         if len(CurrentSelection) > 0:
             CurrentFile = CurrentSelection[0]
             CurrentFileIndex = CurrentFile.Index
-            if self.DisplayMessageBox("Remove this file from the queue?", Icon=QMessageBox.Question, Buttons=(QMessageBox.Yes | QMessageBox.No)) == QMessageBox.Yes:
+            if self.DisplayMessageBox("Remove this file from the queue?", Icon=QMessageBox.Icon.Question, Buttons=(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)) == QMessageBox.StandardButton.Yes:
                 self.Renamer.RemoveFileFromQueue(CurrentFileIndex)
                 self.UpdateQueue()
                 FileQueueLength = len(self.Renamer.FileQueue)
@@ -205,7 +205,7 @@ class MainWindow(QMainWindow):
                 self.QueueTreeWidget.SelectIndex(CurrentFileIndex + Delta)
 
     def ClearQueue(self):
-        if self.DisplayMessageBox("Clear the file queue?", Icon=QMessageBox.Question, Buttons=(QMessageBox.Yes | QMessageBox.No)) == QMessageBox.Yes:
+        if self.DisplayMessageBox("Clear the file queue?", Icon=QMessageBox.Icon.Question, Buttons=(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)) == QMessageBox.StandardButton.Yes:
             self.Renamer.ClearQueue()
             self.UpdateQueue()
 
@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
             for Character in self.RestrictedCharacters:
                 RestrictedCharactersString += f"{Character} "
             RestrictedCharactersString.rstrip()
-            self.DisplayMessageBox(f"Renamed files cannot contain the following characters:\n\n{RestrictedCharactersString}", Icon=QMessageBox.Warning)
+            self.DisplayMessageBox(f"Renamed files cannot contain the following characters:\n\n{RestrictedCharactersString}", Icon=QMessageBox.Icon.Warning)
             return
 
         # Start Renaming Thread
@@ -240,14 +240,14 @@ class MainWindow(QMainWindow):
             self.RenameComplete()
 
     # Interface Methods
-    def DisplayMessageBox(self, Message, Icon=QMessageBox.Information, Buttons=QMessageBox.Ok, Parent=None):
+    def DisplayMessageBox(self, Message, Icon=QMessageBox.Icon.Information, Buttons=QMessageBox.StandardButton.Ok, Parent=None):
         MessageBox = QMessageBox(self if Parent is None else Parent)
         MessageBox.setWindowIcon(self.WindowIcon)
         MessageBox.setWindowTitle(self.ScriptName)
         MessageBox.setIcon(Icon)
         MessageBox.setText(Message)
         MessageBox.setStandardButtons(Buttons)
-        return MessageBox.exec_()
+        return MessageBox.exec()
 
     def UpdateQueue(self):
         self.AddToQueueButton.setEnabled(len(self.Renamer.FileQueue) == 0)
@@ -287,7 +287,7 @@ class MainWindow(QMainWindow):
     def closeEvent(self, Event):
         Close = True
         if self.RenameInProgress:
-            Close = self.DisplayMessageBox("Files are currently being renamed.  Exit anyway?", Icon=QMessageBox.Question, Buttons=(QMessageBox.Yes | QMessageBox.No)) == QMessageBox.Yes
+            Close = self.DisplayMessageBox("Files are currently being renamed.  Exit anyway?", Icon=QMessageBox.Icon.Question, Buttons=(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)) == QMessageBox.StandardButton.Yes
         if Close:
             self.SaveConfigs()
             Event.accept()

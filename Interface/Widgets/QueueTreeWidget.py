@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QHeaderView, QTreeWidget, QTreeWidgetItem
+from PyQt6.QtWidgets import QHeaderView, QTreeWidget, QTreeWidgetItem
 
 
 class QueueTreeWidget(QTreeWidget):
@@ -12,7 +12,7 @@ class QueueTreeWidget(QTreeWidget):
 
         # Header Setup
         self.setRootIsDecorated(False)
-        self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.header().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.setColumnCount(3)
         self.setHeaderLabels(["Original Name", "", "Renamed To..."])
 
@@ -25,7 +25,7 @@ class QueueTreeWidget(QTreeWidget):
     def SelectIndex(self, Index):
         DestinationIndex = self.model().index(Index, 0)
         self.setCurrentIndex(DestinationIndex)
-        self.scrollToItem(self.currentItem(), self.PositionAtCenter)
+        self.scrollToItem(self.currentItem(), self.ScrollHint.PositionAtCenter)
         self.horizontalScrollBar().setValue(0)
 
 

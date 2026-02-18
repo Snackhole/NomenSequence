@@ -1,5 +1,5 @@
 # NomenSequence
-NomenSequence is a simple GUI app to rename any files with ascending integers, and arbitrary prefixes, suffixes, and extensions, written in Python 3.12 with PyQT5.
+NomenSequence is a simple GUI app to rename any files with ascending integers, and arbitrary prefixes, suffixes, and extensions, written in Python 3.12 with PyQT6.
 
 ## Installation
 Because NomenSequence is written in 64-bit Python and packaged as an executable zip, a 64-bit Python 3 installation is required to run it.  It was written and tested in Python 3.12, though it may or may not run in other versions of Python 3.
@@ -30,7 +30,7 @@ However, for convenience, consider running `python3 CreateLinuxDesktopFile.py` o
 
 If you prefer not to use the included interpreter, consider deleting the `Python Interpreter - Linux` folder to save space.
 
-If NomenSequence does not run at first, you probably need to resolve some dependencies.  First, try `sudo apt install libxcb-xinerama0`.  If that doesn't resolve the issue, try installing PyQT5 with `sudo apt install python3-pyqt5`; if this does resolve the issue, you might even be able to (partially) uninstall it with `sudo apt remove python3-pyqt5` and still run NomenSequence, as long as you don't autoremove the additional packages that were installed with it.  If installing PyQT5 through APT doesn't work, try installing it through pip; if you don't have pip already, use `sudo apt install python3-pip`, then run `pip3 install pyqt5`.  Other issues have not yet been encountered and will require you to do some research and troubleshooting to resolve on your system.
+If NomenSequence does not run at first, you probably need to resolve some dependencies.  First, try `sudo apt install libxcb-xinerama0`.  If that doesn't resolve the issue, try installing PyQT6 with `sudo apt install python3-pyqt6`; if this does resolve the issue, you might even be able to (partially) uninstall it with `sudo apt remove python3-pyqt6` and still run NomenSequence, as long as you don't autoremove the additional packages that were installed with it.  If installing PyQT6 through APT doesn't work, try installing it through pip; if you don't have pip already, use `sudo apt install python3-pip`, then run `pip3 install pyqt6`.  Other issues have not yet been encountered and will require you to do some research and troubleshooting to resolve on your system.
 
 ## Updates
 Updating NomenSequence is as simple as deleting all files wherever you installed it *except* the `Configs` folder, and then extracting the contents of the latest release to the installation folder.  Any shortcuts in place should resolve without issue to the updated version.  If you are using the included interpreter, you may have to give it executable permissions after updating.
@@ -40,4 +40,4 @@ The `Configs` folder should be left in place as it stores settings and contexts 
 ## Uninstallation
 Uninstalling NomenSequence itself only requires deleting the directory you extracted it to, along with any shortcuts you created.
 
-If you need to uninstall Python 3.12 or, on Linux, PyQT5, consult their documentation.
+If you need to uninstall Python 3.12 or, on Linux, PyQT6, consult their documentation.

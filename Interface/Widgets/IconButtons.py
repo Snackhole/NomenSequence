@@ -1,6 +1,6 @@
-from PyQt5 import QtCore
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QPushButton
+from PyQt6 import QtCore
+from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtWidgets import QPushButton
 
 
 class AddButton(QPushButton):
